@@ -24,17 +24,21 @@ export default function FeedContainer() {
 			setError(null);
 			try {
 				// Primary feed endpoint; fallback to trending
-				const res = await fetch("http://localhost:8000/api/feed/pivot");
+				const res = await fetch("/api/feed/pivot");
 				if (!res.ok) {
 					throw new Error("primary feed failed");
 				}
 				const data = await res.json();
-				if (mounted) setArticles(data?.articles ?? data ?? []);
+				// Handle different response formats
+				let articles = Array.isArray(data) ? data : data?.articles || [];
+				if (mounted) setArticles(articles);
 			} catch (e) {
 				try {
-					const fallback = await fetch("http://localhost:8000/api/articles/trending");
+					const fallback = await fetch("/api/articles/trending");
 					const data = await fallback.json();
-					if (mounted) setArticles(data?.articles ?? data ?? []);
+					// Handle different response formats
+					let articles = Array.isArray(data) ? data : data?.articles || [];
+					if (mounted) setArticles(articles);
 				} catch (err) {
 					if (mounted) setError("Failed to load feed");
 				}

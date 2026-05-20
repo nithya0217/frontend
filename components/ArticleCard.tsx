@@ -14,9 +14,7 @@ type Article = {
 export default function ArticleCard({ article }: { article: Article }) {
 	const handleClick = async () => {
 		try {
-			await fetch("http://localhost:8000/api/interactions/log", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
+      await fetch("/api/interactions/log", {
 				body: JSON.stringify({ article_id: article.id, type: "view" }),
 			});
 		} catch (e) {
