@@ -68,16 +68,3 @@ export default function FeedContainer() {
 		</section>
 	);
 }
-
-	if (loading) return <div className="py-12 text-center">Loading feed…</div>;
-	if (error) return <div className="py-12 text-center text-red-600">{error}</div>;
-
-	return (
-		<section className="grid gap-4 md:grid-cols-2">
-			{articles.length === 0 && <div>No articles found.</div>}
-			{articles.map((a) => (
-				<ArticleCard key={String(a.id)} article={a} />
-			))}
-		</section>
-	);
-}
