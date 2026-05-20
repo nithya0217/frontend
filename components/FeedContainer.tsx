@@ -30,16 +30,18 @@ export default function FeedContainer() {
 				}
 				const data = await res.json();
 				// Handle different response formats
-				let articles = Array.isArray(data) ? data : data?.articles || [];
+				const articles = Array.isArray(data) ? data : data?.articles || [];
 				if (mounted) setArticles(articles);
-			} catch (e) {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			} catch (_) {
 				try {
 					const fallback = await fetch("/api/articles/trending");
 					const data = await fallback.json();
 					// Handle different response formats
-					let articles = Array.isArray(data) ? data : data?.articles || [];
+					const articles = Array.isArray(data) ? data : data?.articles || [];
 					if (mounted) setArticles(articles);
-				} catch (err) {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				} catch (_) {
 					if (mounted) setError("Failed to load feed");
 				}
 			} finally {
@@ -53,6 +55,19 @@ export default function FeedContainer() {
 			mounted = false;
 		};
 	}, []);
+
+	if (loading) return <div className="py-12 text-center">Loading feed…</div>;
+	if (error) return <div className="py-12 text-center text-red-600">{error}</div>;
+
+	return (
+		<section className="grid gap-4 md:grid-cols-2">
+			{articles.length === 0 && <div>No articles found.</div>}
+			{articles.map((a) => (
+				<ArticleCard key={String(a.id)} article={a} />
+			))}
+		</section>
+	);
+}
 
 	if (loading) return <div className="py-12 text-center">Loading feed…</div>;
 	if (error) return <div className="py-12 text-center text-red-600">{error}</div>;

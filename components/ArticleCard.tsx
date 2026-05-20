@@ -17,7 +17,8 @@ export default function ArticleCard({ article }: { article: Article }) {
       await fetch("/api/interactions/log", {
 				body: JSON.stringify({ article_id: article.id, type: "view" }),
 			});
-		} catch (e) {
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		} catch (_) {
 			// ignore network errors
 		}
 	};
