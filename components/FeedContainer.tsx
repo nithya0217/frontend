@@ -19,29 +19,27 @@ export default function FeedContainer() {
 	useEffect(() => {
 		let mounted = true;
 
-		const load = async () => {
+		const fetchArticles = async () => {
 			setLoading(true);
 			setError(null);
-			try {
-				// Primary feed endpoint; fallback to trending
-				const res = await fetch("/api/feed/pivot");
-				if (!res.ok) {
-					throw new Error("primary feed failed");
+
+			const loadFromEndpoint = async (url: string) => {
+				const response = await fetch(url);
+				if (!response.ok) {
+					throw new Error(`Fetch failed: ${response.status}`);
 				}
-				const data = await res.json();
-				// Handle different response formats
-				const articles = Array.isArray(data) ? data : data?.articles || [];
-				if (mounted) setArticles(articles);
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			} catch (_) {
+				const payload = await response.json();
+				return Array.isArray(payload) ? payload : payload?.articles || [];
+			};
+
+			try {
+				const primaryArticles = await loadFromEndpoint("/api/feed/pivot");
+				if (mounted) setArticles(primaryArticles);
+			} catch (primaryError) {
 				try {
-					const fallback = await fetch("/api/articles/trending");
-					const data = await fallback.json();
-					// Handle different response formats
-					const articles = Array.isArray(data) ? data : data?.articles || [];
-					if (mounted) setArticles(articles);
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-				} catch (_) {
+					const fallbackArticles = await loadFromEndpoint("/api/articles/trending");
+					if (mounted) setArticles(fallbackArticles);
+				} catch (fallbackError) {
 					if (mounted) setError("Failed to load feed");
 				}
 			} finally {
@@ -49,22 +47,30 @@ export default function FeedContainer() {
 			}
 		};
 
-		load();
+		fetchArticles();
 
 		return () => {
 			mounted = false;
 		};
 	}, []);
 
-	if (loading) return <div className="py-12 text-center">Loading feed…</div>;
-	if (error) return <div className="py-12 text-center text-red-600">{error}</div>;
+	if (loading) {
+		return <div className="py-12 text-center">Loading feed…</div>;
+	}
+
+	if (error) {
+		return <div className="py-12 text-center text-red-600">{error}</div>;
+	}
 
 	return (
 		<section className="grid gap-4 md:grid-cols-2">
-			{articles.length === 0 && <div>No articles found.</div>}
-			{articles.map((a) => (
-				<ArticleCard key={String(a.id)} article={a} />
-			))}
+			{articles.length === 0 ? (
+				<div>No articles found.</div>
+			) : (
+				articles.map((a) => (
+					<ArticleCard key={String(a.id)} article={a} />
+				))
+			)}
 		</section>
 	);
 }
