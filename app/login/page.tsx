@@ -1,0 +1,98 @@
+"use client";
+
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import TopNavbar from "@/components/TopNavbar";
+import Link from "next/link";
+import { toast } from "sonner";
+
+const loginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
+
+export const metadata = {
+  title: "Login - Pivot",
+};
+
+export default function LoginPage() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginFormValues>({
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const onSubmit = (values: LoginFormValues) => {
+    const result = loginSchema.safeParse(values);
+    if (!result.success) {
+      result.error.errors.forEach(({ path, message }) => {
+        if (path[0]) {
+          setError(path[0] as keyof LoginFormValues, { message });
+        }
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    const payload = {
+      username: result.data.username,
+      password: result.data.password,
+    };
+
+    console.log("POST /api/auth/login", payload);
+    toast.success("Login successful: session simulated.");
+    setTimeout(() => setIsSubmitting(false), 400);
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <TopNavbar />
+      <main className="mx-auto max-w-xl px-4 py-10 sm:px-6 lg:px-8">
+        <div className="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+          <div className="space-y-3">
+            <p className="text-sm uppercase tracking-[0.26em] text-slate-500">Login</p>
+            <h1 className="text-4xl font-semibold text-slate-950">Sign in to Pivot</h1>
+            <p className="text-sm leading-6 text-slate-600">
+              Enter your credentials to access the reading and authoring workspace.
+            </p>
+          </div>
+
+          <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
+            <label className="block text-sm font-medium text-slate-900">
+              Username
+              <Input type="text" className="mt-2" {...register("username")} />
+              {errors.username ? <p className="mt-2 text-xs text-red-600">{errors.username.message}</p> : null}
+            </label>
+
+            <label className="block text-sm font-medium text-slate-900">
+              Password
+              <Input type="password" className="mt-2" {...register("password")} />
+              {errors.password ? <p className="mt-2 text-xs text-red-600">{errors.password.message}</p> : null}
+            </label>
+
+            <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="text-sm text-slate-600">
+                Need an account? <Link href="/register" className="font-semibold text-slate-950 hover:underline">Register</Link>
+              </p>
+              <Button type="submit" size="lg" disabled={isSubmitting}>
+                {isSubmitting ? "Signing in…" : "Sign in"}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </main>
+    </div>
+  );
+}
