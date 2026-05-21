@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { apiUrl } from "@/lib/api";
 
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  email: z.string().email("Please enter a valid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
@@ -30,7 +30,7 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm<LoginFormValues>({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -48,7 +48,7 @@ export default function LoginPage() {
 
     setIsSubmitting(true);
     const payload = {
-      username: result.data.username,
+      email: result.data.email,
       password: result.data.password,
     };
 
@@ -88,9 +88,9 @@ export default function LoginPage() {
 
           <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <label className="block text-sm font-medium text-slate-900">
-              Username
-              <Input type="text" className="mt-2" {...register("username")} />
-              {errors.username ? <p className="mt-2 text-xs text-red-600">{errors.username.message}</p> : null}
+              Email
+              <Input type="email" className="mt-2" {...register("email")} />
+              {errors.email ? <p className="mt-2 text-xs text-red-600">{errors.email.message}</p> : null}
             </label>
 
             <label className="block text-sm font-medium text-slate-900">

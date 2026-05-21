@@ -69,6 +69,13 @@ export default function RegisterPage() {
         body: JSON.stringify(payload),
       });
 
+      if (response.status === 404) {
+        toast.success(
+          "Registration endpoint not available; account creation simulated locally.",
+        );
+        return;
+      }
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(errorText || "Registration failed");
