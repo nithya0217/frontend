@@ -26,44 +26,28 @@ export default function ArticlePreview({
   liked = false,
 }: ArticlePreviewProps) {
   return (
-    <article className="border-b border-gray-200 py-8">
-      <div className="flex gap-6">
-        {/* Content Section */}
-        <div className="flex flex-1 flex-col gap-3">
-          {/* Metadata */}
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            {publication && (
-              <>
-                <span className="font-medium text-gray-700">{publication}</span>
-                <span>·</span>
-              </>
-            )}
+    <article className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+      <div className="grid gap-6 lg:grid-cols-[1fr_220px] lg:items-start">
+        <div className="space-y-4">
+          <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.24em] text-slate-500">
+            {publication && <span>{publication}</span>}
             <span>{author}</span>
-            <span>·</span>
-            <time>{date}</time>
-            {readingTime && (
-              <>
-                <span>·</span>
-                <span>{readingTime}</span>
-              </>
-            )}
+            <span>{date}</span>
+            {readingTime && <span>{readingTime}</span>}
           </div>
 
-          {/* Title */}
-          <h2 className="font-lora text-2xl font-bold leading-tight text-black hover:text-gray-700">
+          <h2 className="font-lora text-3xl font-bold leading-tight text-slate-950 transition-colors hover:text-slate-700">
             {title}
           </h2>
 
-          {/* Subtitle */}
-          <p className="max-h-[3.5rem] overflow-hidden text-base text-gray-600">{subtitle}</p>
+          <p className="text-base leading-7 text-slate-600">{subtitle}</p>
 
-          {/* Tags */}
           {tags.length > 0 && (
-            <div className="flex gap-2 pt-2">
+            <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-200"
+                  className="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-slate-700"
                 >
                   {tag}
                 </span>
@@ -71,45 +55,32 @@ export default function ArticlePreview({
             </div>
           )}
 
-          {/* Footer Actions */}
-          <div className="flex items-center justify-between pt-4">
-            <div className="flex gap-4 text-gray-600">
-              <button className="flex items-center gap-1 text-sm transition-colors hover:text-green-600">
-                <span className="text-base">👏</span>
-                <span className="text-xs text-gray-500">1.2K</span>
+          <div className="mt-4 flex flex-wrap items-center justify-between gap-3 text-sm text-slate-600">
+            <div className="flex items-center gap-3">
+              <button className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-200">
+                <span>👏</span>
+                <span>1.2K</span>
               </button>
-              <button className="flex items-center gap-1 text-sm transition-colors hover:text-blue-600">
-                <MessageCircle size={18} className="text-gray-500" />
-                <span className="text-xs text-gray-500">45</span>
-              </button>
-              <button className="flex items-center gap-1 text-sm transition-colors hover:text-blue-600">
-                <Share2 size={18} className="text-gray-500" />
+              <button className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-200">
+                <MessageCircle size={16} className="text-slate-500" />
+                <span>45</span>
               </button>
             </div>
-
-            {/* Save Button */}
             <button
-              className={`rounded-full p-2 transition-colors ${
+              className={`inline-flex items-center justify-center rounded-full px-3 py-2 text-xs font-semibold transition ${
                 liked
-                  ? 'bg-gray-100 text-green-600'
-                  : 'text-gray-600 hover:bg-gray-100'
+                  ? 'bg-slate-900 text-white'
+                  : 'border border-slate-200 text-slate-700 hover:bg-slate-100'
               }`}
             >
-              <BookmarkIcon size={20} />
+              <BookmarkIcon size={16} />
             </button>
           </div>
         </div>
 
-        {/* Image Section */}
         {imageUrl && (
-          <div className="hidden flex-shrink-0 sm:block">
-            <div className="h-40 w-40 overflow-hidden rounded-lg bg-gray-200">
-              <img
-                src={imageUrl}
-                alt={title}
-                className="h-full w-full object-cover"
-              />
-            </div>
+          <div className="overflow-hidden rounded-[1.5rem] bg-slate-100">
+            <img src={imageUrl} alt={title} className="h-full w-full object-cover" />
           </div>
         )}
       </div>
