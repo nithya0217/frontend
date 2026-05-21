@@ -1,20 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Lora } from "next/font/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import "sonner/dist/sonner.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
-
-const lora = Lora({
-  variable: "--font-lora",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
 
 export const metadata: Metadata = {
   title: "Pivot UI - Content Discovery & Recommendations",
@@ -28,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${lora.variable} bg-white text-black antialiased`}>
+      <body className="min-h-screen bg-white text-black antialiased font-sans">
         {children}
         <Toaster richColors position="bottom-right" />
       </body>
