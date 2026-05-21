@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import TopNavbar from "@/components/TopNavbar";
 import Link from "next/link";
 import { toast } from "sonner";
+import { apiUrl } from "@/lib/api";
 
 const loginSchema = z.object({
   username: z.string().min(1, "Username is required"),
@@ -34,7 +35,7 @@ export default function LoginPage() {
     },
   });
 
-  const onSubmit = (values: LoginFormValues) => {
+  const onSubmit = async (values: LoginFormValues) => {
     const result = loginSchema.safeParse(values);
     if (!result.success) {
       result.error.errors.forEach(({ path, message }) => {
@@ -51,9 +52,25 @@ export default function LoginPage() {
       password: result.data.password,
     };
 
-    console.log("POST /api/auth/login", payload);
-    toast.success("Login successful: session simulated.");
-    setTimeout(() => setIsSubmitting(false), 400);
+    try {
+      const response = await fetch(apiUrl("/auth/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Login failed");
+      }
+
+      toast.success("Login successful: authenticated with Pivot backend.");
+    } catch (error) {
+      toast.error("Login failed. Check your credentials or backend service.");
+      console.error("Login error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

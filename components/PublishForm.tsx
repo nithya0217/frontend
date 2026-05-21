@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { apiUrl } from "@/lib/api";
 
 const publishSchema = z.object({
   title: z.string().min(1, "Title is required").max(255, "Title must be 255 characters or fewer"),
@@ -42,6 +43,7 @@ function slugify(value: string) {
 export default function PublishForm() {
   const [submissionState, setSubmissionState] = useState<"idle" | "success" | "error">("idle");
   const [submissionMessage, setSubmissionMessage] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
@@ -64,7 +66,7 @@ export default function PublishForm() {
     setValue("tag_ids", next, { shouldValidate: true });
   };
 
-  const onSubmit = (payload: PublishFormValues) => {
+  const onSubmit = async (payload: PublishFormValues) => {
     const result = publishSchema.safeParse(payload);
     if (!result.success) {
       setSubmissionState("error");
@@ -81,11 +83,31 @@ export default function PublishForm() {
       tag_ids: result.data.tag_ids,
     };
 
-    console.log("POST /api/articles", articlePayload);
-    setSubmissionState("success");
-    setSubmissionMessage("Draft payload generated successfully.");
-    toast.success("Success: Article payload ready for publishing.");
-    reset();
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(apiUrl("/articles"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(articlePayload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to publish article");
+      }
+
+      setSubmissionState("success");
+      setSubmissionMessage("Article submitted successfully.");
+      toast.success("Success: Article published to Pivot backend.");
+      reset();
+    } catch (error) {
+      setSubmissionState("error");
+      setSubmissionMessage("Unable to submit the article. Please try again.");
+      toast.error("Publishing failed. Check your network or backend service.");
+      console.error("Publish article error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -145,7 +167,9 @@ export default function PublishForm() {
             <p>Publishing as <span className="font-semibold">tech_guru</span></p>
             <p className="text-xs text-slate-500">Author ID: 1</p>
           </div>
-          <Button type="submit" size="lg">Publish Article</Button>
+          <Button type="submit" size="lg" disabled={isSubmitting}>
+            {isSubmitting ? "Publishing…" : "Publish Article"}
+          </Button>
         </div>
 
         {submissionState !== "idle" ? (

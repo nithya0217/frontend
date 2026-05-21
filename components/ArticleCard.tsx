@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { apiUrl } from "@/lib/api";
 
 type Article = {
   id: number;
@@ -20,7 +21,7 @@ const readerId = 3;
 
 async function logInteraction(articleId: number, interactionType: string, message: string) {
   try {
-    await fetch("/api/interactions", {
+    await fetch(apiUrl("/interactions"), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

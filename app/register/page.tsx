@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import TopNavbar from "@/components/TopNavbar";
 import Link from "next/link";
 import { toast } from "sonner";
+import { apiUrl } from "@/lib/api";
 
 const registerSchema = z
   .object({
@@ -43,7 +44,7 @@ export default function RegisterPage() {
     },
   });
 
-  const onSubmit = (values: RegisterFormValues) => {
+  const onSubmit = async (values: RegisterFormValues) => {
     const result = registerSchema.safeParse(values);
     if (!result.success) {
       result.error.errors.forEach(({ path, message }) => {
@@ -61,9 +62,25 @@ export default function RegisterPage() {
       password: result.data.password,
     };
 
-    console.log("POST /api/auth/register", payload);
-    toast.success("Registration successful: account creation simulated.");
-    setTimeout(() => setIsSubmitting(false), 400);
+    try {
+      const response = await fetch(apiUrl("/auth/register"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Registration failed");
+      }
+
+      toast.success("Registration successful: account created in Pivot backend.");
+    } catch (error) {
+      toast.error("Registration failed. Please try again later.");
+      console.error("Register error:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
