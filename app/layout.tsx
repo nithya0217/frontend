@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
-import "sonner/dist/sonner.css";
+import "sonner/dist/styles.css";
 
 export const metadata: Metadata = {
   title: "Pivot UI - Content Discovery & Recommendations",
