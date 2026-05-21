@@ -32,17 +32,17 @@ export default function TopNavbar() {
             Pivot
           </Link>
           <nav className="hidden items-center gap-4 text-sm text-slate-700 sm:flex">
-            <Link href="/feed" className="transition hover:text-slate-950">
-              Feed
+            <Link href="/" className="transition hover:text-slate-950">
+              Home
             </Link>
-            <Link href="/explore" className="transition hover:text-slate-950">
-              Explore
+            <Link href="/register" className="transition hover:text-slate-950">
+              Register
             </Link>
             <Link href="/login" className="transition hover:text-slate-950">
               Login
             </Link>
-            <Link href="/register" className="transition hover:text-slate-950">
-              Register
+            <Link href="/feed" className="transition hover:text-slate-950">
+              Feed
             </Link>
           </nav>
         </div>
@@ -67,12 +67,6 @@ export default function TopNavbar() {
               </button>
             ))}
           </div>
-          <Link
-            href="/write"
-            className="rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
-          >
-            Write a Post
-          </Link>
         </div>
       </div>
     </header>

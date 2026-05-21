@@ -2,7 +2,7 @@ import Link from "next/link";
 import TopNavbar from "@/components/TopNavbar";
 
 export const metadata = {
-  title: "Pivot | Diversity Routing Publishing Platform",
+  title: "Pivot | Register, Login, Feed",
 };
 
 export default function Home() {
@@ -14,24 +14,46 @@ export default function Home() {
           <div className="max-w-3xl space-y-6">
             <p className="text-sm uppercase tracking-[0.26em] text-slate-500">Pivot</p>
             <h1 className="text-5xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
-              Content discovery with contrarian routing for richer perspectives.
+              Register first, then login, then explore the feed.
             </h1>
             <p className="text-lg leading-8 text-slate-600">
-              Explore a platform built around diversity routing, where readers see familiar recommendations and opposing views through a deliberate content engine.
+              Start your journey by creating an account, sign in, and then discover the latest content in the feed.
             </p>
-            <div className="flex flex-col gap-3 sm:flex-row">
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <Link
+                href="/register"
+                className="rounded-3xl bg-slate-950 px-6 py-5 text-center text-base font-semibold text-white transition hover:bg-slate-800"
+              >
+                Register
+              </Link>
+              <Link
+                href="/login"
+                className="rounded-3xl bg-slate-100 px-6 py-5 text-center text-base font-semibold text-slate-950 transition hover:bg-slate-200"
+              >
+                Login
+              </Link>
               <Link
                 href="/feed"
-                className="inline-flex w-full items-center justify-center rounded-full bg-slate-950 px-6 py-4 text-base font-semibold text-white transition hover:bg-slate-800 sm:w-auto"
+                className="rounded-3xl border border-slate-200 bg-white px-6 py-5 text-center text-base font-semibold text-slate-950 transition hover:border-slate-300"
               >
-                Visit Feed
+                Feed
               </Link>
-              <Link
-                href="/write"
-                className="inline-flex w-full items-center justify-center rounded-full border border-slate-200 bg-white px-6 py-4 text-base font-semibold text-slate-950 transition hover:border-slate-300 sm:w-auto"
-              >
-                Write a Post
-              </Link>
+            </div>
+
+            <div className="grid gap-4 rounded-[2rem] border border-slate-100 bg-slate-50 p-6 text-sm text-slate-600 sm:grid-cols-3">
+              <div>
+                <p className="font-semibold text-slate-950">Step 1</p>
+                Register your account.
+              </div>
+              <div>
+                <p className="font-semibold text-slate-950">Step 2</p>
+                Sign in with your credentials.
+              </div>
+              <div>
+                <p className="font-semibold text-slate-950">Step 3</p>
+                Browse the feed content.
+              </div>
             </div>
           </div>
         </div>
